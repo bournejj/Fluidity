@@ -19,9 +19,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///fluidity"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///fluidity") 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'hellosecret1')
-print(app.config['SECRET_KEY'])
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = './.flask_session/'
 Session(app)
