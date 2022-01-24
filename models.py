@@ -38,7 +38,7 @@ class Reccomended_tracks(db.Model):
     title = db.Column(db.String(), nullable=False)
     song_id = db.Column(db.String(), nullable=False)
     playlist_id = db.Column(db.Integer,db. ForeignKey(
-        'playlists.id'), nullable=False)
+        'playlists.id'))
  
     user_id = db.Column(db.String, db. ForeignKey(
         'users.spotify_id'), nullable=False)
