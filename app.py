@@ -20,6 +20,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
+connect_db(app)
+
 # uri = os.getenv("DATABASE_URL")
 # if uri.startswith("postgres://"):
 #     uri = uri.replace("postgres://", "postgresql://")
@@ -34,7 +36,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = './.flask_session/'
 Session(app)
 
-connect_db(app)
+
 
 
 
