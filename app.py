@@ -5,6 +5,7 @@ from flask.templating import render_template_string
 from flask_session import Session
 from dotenv import load_dotenv
 import os
+import re
 import spotipy
 import uuid
 from models import Recently_played_tracks, db, connect_db, User, Reccomended_tracks, playlist, Seed_tracks, playlist_tracks
@@ -19,8 +20,11 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///fluidity")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',"postgresql:///fluidity" ).replace("://", "ql://", 1) 
+uri = os.getenv("DATABASE_URL")  # or other relevant config var
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///fluidity")
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'hellosecret1')
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = './.flask_session/'
