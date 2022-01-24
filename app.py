@@ -26,7 +26,7 @@ app = Flask(__name__)
 
 # engine = create_engine(uri, echo=True)
 
-SQLALCHEMY_DATABASE_URI = 'postgres://gqrvuoyjdtusoq:f4ed65587867d02b7d372152c4cf570aa7ecb444180b2bbf07ab7bdcbd454efb@ec2-34-205-46-149.compute-1.amazonaws.com:5432/d4gp80b4aani07'
+DATABASE_URI = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///fluidity")
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'hellosecret1')
