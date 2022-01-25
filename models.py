@@ -22,8 +22,6 @@ class User(db.Model):
 
 
     spotify_id = db.Column(db.String,  primary_key=True)
-
-    playlist_id = db.Column(db.Integer,db. ForeignKey('playlists.id'))
     reccomended_tracks = db.relationship("Reccomended_tracks", backref="user")
     # playlist = db.relationship("playlist", backref="user")
 
@@ -38,7 +36,7 @@ class Reccomended_tracks(db.Model):
     title = db.Column(db.String(), nullable=False)
     song_id = db.Column(db.String(), nullable=False)
     playlist_id = db.Column(db.Integer,db. ForeignKey(
-        'playlists.id'))
+        'playlists.id'), nullable=False)
  
     user_id = db.Column(db.String, db. ForeignKey(
         'users.spotify_id'), nullable=False)
