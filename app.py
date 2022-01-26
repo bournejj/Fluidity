@@ -73,6 +73,9 @@ def index():
         return f'<h2><a href="{auth_url}">Sign in</a></h2>'
 
     # Step 4. Signed in, display data
+
+    db.drop_all()
+    db.create_all()
     spotify = spotipy.Spotify(auth_manager=auth_manager)
 
     user_id = spotify.me()['id']
