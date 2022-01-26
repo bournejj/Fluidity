@@ -74,8 +74,7 @@ def index():
 
     # Step 4. Signed in, display data
 
-    db.drop_all()
-    db.create_all()
+    
     spotify = spotipy.Spotify(auth_manager=auth_manager)
 
     user_id = spotify.me()['id']
@@ -98,6 +97,9 @@ def index():
 @app.route('/home')
 def home_page_for_playlist_form():
     """diplsay a form to create a new playlist"""
+
+    db.drop_all()
+    db.create_all()
 
     sp = validate()
     user_id = sp.me()['id']
