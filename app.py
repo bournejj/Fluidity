@@ -73,6 +73,14 @@ def index():
         return f'<h2><a href="{auth_url}">Sign in</a></h2>'
 
     # Step 4. Signed in, display data
+    db.drop(Reccomended_tracks)
+    db.drop(Recently_played_tracks)
+    db.drop(Seed_tracks)
+    db.drop(playlist_tracks)
+    db.create_all(Reccomended_tracks)
+    db.create_all(Recently_played_tracks)
+    db.create_all(Seed_tracks)
+    db.create_all(playlist_tracks)
 
     
     spotify = spotipy.Spotify(auth_manager=auth_manager)
@@ -98,8 +106,6 @@ def index():
 def home_page_for_playlist_form():
     """diplsay a form to create a new playlist"""
 
-    db.drop_all()
-    db.create_all()
 
     sp = validate()
     user_id = sp.me()['id']
@@ -386,6 +392,8 @@ def show_playlist(id):
         
     tracks = playlist_tracks.query.filter_by(
                 playlist_id=id).limit(30)
+
+                
 
     return render_template('show_playlist.html', tracks=tracks, current_playlist=current_playlist)
 
