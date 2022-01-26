@@ -282,7 +282,9 @@ def get_seed_tracks():
 
     seed_tracks = Seed_tracks.query.limit(5)
 
-    playlist_id= user.playlist_id
+    curr_playlist = playlist.query.order_by(playlist.id.desc())
+    playlist_id = curr_playlist.first()
+
 
     p = playlist.query.get_or_404(playlist_id)
 
