@@ -282,11 +282,11 @@ def get_seed_tracks():
 
     seed_tracks = Seed_tracks.query.limit(5)
 
-    curr_playlist = playlist.query.order_by(playlist.id.desc())
-    playlist_id = curr_playlist.first()
+    curr_playlist = playlist.query.order_by(playlist.id.desc()).first()
+    playlist_id = curr_playlist
 
 
-    p = playlist.query.get_or_404(playlist_id)
+    # p = playlist.query.get_or_404(playlist_id)
 
     for seed_track in seed_tracks:
 
