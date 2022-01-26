@@ -77,6 +77,7 @@ def index():
     db.session.query(Recently_played_tracks).delete()
     db.session.query(Seed_tracks).delete()
     db.session.query(playlist_tracks).delete()
+    db.session.query(playlist).delete()
     db.session.commit()
 
   
