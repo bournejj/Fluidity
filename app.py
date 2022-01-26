@@ -73,14 +73,14 @@ def index():
         return f'<h2><a href="{auth_url}">Sign in</a></h2>'
 
     # Step 4. Signed in, display data
-    db.drop(Reccomended_tracks)
-    db.drop(Recently_played_tracks)
-    db.drop(Seed_tracks)
-    db.drop(playlist_tracks)
-    db.create_all(Reccomended_tracks)
-    db.create_all(Recently_played_tracks)
-    db.create_all(Seed_tracks)
-    db.create_all(playlist_tracks)
+    db.session.query(Reccomended_tracks).delete()
+    db.session.query(Recently_played_tracks).delete()
+    db.session.query(Seed_tracks).delete()
+    db.session.query(playlist_tracks).delete()
+    db.session.commit()
+
+  
+  
 
     
     spotify = spotipy.Spotify(auth_manager=auth_manager)
