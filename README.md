@@ -1,6 +1,12 @@
 
 <h2>Title</h2>
 <p> Fluidity</p>
+
+ [Try it now! - Click this link](https://fluidity-jb.herokuapp.com/home)
+
+
+
+
 <h2>What does my website do</h2>
 <p> A user can make a personalized playlist based on tempo and key created from reccomended tracks. This makes the playlist much smoother and and flows a lot better than the discover weekly playlist</p>
 <h2>What does my website do</h2>
