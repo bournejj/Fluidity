@@ -14,12 +14,10 @@
     <link rel="stylesheet" href="/static/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <title>Document</title>
+    <title>reccomendations</title>
 </head>
 
 <body>
-
-
     <v-app-bar app color="white" height="75" id=app>
         <v-avatar class="mr-3" color="grey lighten-5" size="70">
             <v-img contain max-height="70%" src="https://cdn-icons-png.flaticon.com/512/6399/6399339.png">
@@ -31,17 +29,11 @@
         </v-toolbar-title>
     </v-app-bar>
 
-
-
     <section id="main">
         <div class="container" id='Page_title'>
 
             <div class="col-sm-8" id="detail"><b>
-
-
             </div>
-
-
             <table class="table">
                 <thead>
                     <tr>
@@ -49,88 +41,40 @@
                         <th scope="col">Artist</th>
                         <th scope="col">Title</th>
 
-
-
-
-                        <!-- <td><i class="fa fa-clock-o"></i></td> -->
                     </tr>
-
 
                 </thead>
                 {% for t in tracks %}
                 <tbody>
                     <tr>
 
-
                         <td>{{t.artist}}</td>
                         <td>{{t.title}}</td>
                         <td>
                             
-
-
-
-
-
-
-
-
-
-
-
                             <button type="button"class="add-track-to-playlist btn btn-primary" data-id='{{t.id}}'> +
                             </button>
 
-
-
-
-
-
                         </td>
 
-
-
-
                     </tr>
-
-
                 </tbody>
                 {% endfor %}
-
-
-
             </table>
 
         </div>
 
-
-
-
-
-
-
     </section>
 
     <section id="rec_btn">
-
         <form action='/playlist/{{playlist_id}}'>
-
 
             <button type="submit" class="btn btn-primary"> See playlist</button>
 
-
         </form>
     </section>
+
     </section>
-
-
-
-
-
-
-
-
-
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.js"
         integrity="sha512-RT3IJsuoHZ2waemM8ccCUlPNdUuOn8dJCH46N3H2uZoY7swMn1Yn7s56SsE2UBMpjpndeZ91hm87TP1oU6ANjQ=="
@@ -203,11 +147,6 @@
     </script>
 
     </script>
-
-
-
-
-
 
 </body>
 

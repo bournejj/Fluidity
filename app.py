@@ -14,31 +14,17 @@ import json
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
 
-
 load_dotenv()
-
 
 app = Flask(__name__)
 
-# uri = os.getenv("DATABASE_URL")
-# if uri.startswith("postgres://"):
-#     uri = uri.replace("postgres://", "postgresql://")
-
-# engine = create_engine(uri, echo=True)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
-
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "postgresql:///fluidity")
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'hellosecret1')
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = './.flask_session/'
 
-
 connect_db(app)
-
-
-
-
 
 caches_folder = './.spotify_caches/'
 if not os.path.exists(caches_folder):
@@ -72,7 +58,7 @@ def index():
         auth_url = auth_manager.get_authorize_url()
         return f'<h2><a href="{auth_url}">Sign in</a></h2>'
 
-    # Step 4. Signed in, display data
+    # Step 4. Signed in, display data and delete tables
     db.session.query(Reccomended_tracks).delete()
     db.session.query(Recently_played_tracks).delete()
     db.session.query(Seed_tracks).delete()
@@ -80,10 +66,6 @@ def index():
     db.session.query(playlist).delete()
     db.session.commit()
 
-  
-  
-
-    
     spotify = spotipy.Spotify(auth_manager=auth_manager)
 
     user_id = spotify.me()['id']
@@ -91,7 +73,6 @@ def index():
     user = User(spotify_id=user_id)
 
     if User.query.get(user_id):
-
 
         return redirect('/home')
 
@@ -105,9 +86,7 @@ def index():
 
 @app.route('/home')
 def home_page_for_playlist_form():
-    """diplsay a form to create a new playlist"""
-
-
+    """diplsay  landing page and a form to create a new playlist"""
     sp = validate()
     user_id = sp.me()['id']
     form = createPlaylistForm()
@@ -170,6 +149,7 @@ def create_playlist():
 
 @app.route('/handle_audio_features')
 def get_audio_features():
+    """get BPM and key for the recently played tracks"""
 
     sp = validate()
     user_id = sp.me()['id']
@@ -202,7 +182,7 @@ def get_audio_features():
 
 @app.route('/recently_played')
 def get_recently_played_tracks():
-    """display a list of recently played tracks with audio features"""
+    """display a list of recently played tracks with added audio features"""
 
     sp = validate()
     user_id = sp.me()['id']
@@ -216,7 +196,6 @@ def get_recently_played_tracks():
 
     response = sp.current_user_recently_played(
         limit=30, after=None, before=None)
-
 
     list_1 = []
 
@@ -262,7 +241,7 @@ def get_recently_played_tracks():
 
 @app.route('/add_seed_track/<int:id>')
 def handle_seed_tracks(id):
-    """add seed tracks takedn from recently played tracks"""
+    """add seed tracks taken from recently played tracks to return reccomended tracks"""
 
     track = Recently_played_tracks.query.get_or_404(id)
 
@@ -297,11 +276,7 @@ def get_seed_tracks():
     curr_playlist = playlist.query.order_by(playlist.id.desc()).first()
     playlist_id = curr_playlist.id
 
-
-    # p = playlist.query.get_or_404(playlist_id)
-
     for seed_track in seed_tracks:
-
 
        seed_tracks_tracks.append(seed_track.song_id)
        seed_tracks_artist.append(seed_track.artist_id)
@@ -335,7 +310,7 @@ def get_seed_tracks():
 
 @app.route('/handle_add_tracks_to_playlist/<int:id>')
 def handle_add_track_to_playlist(id):
-    """add track to current playlist from reccomended tracks"""
+    """handle add selected track from reccomended tracks to current playlist """
 
     sp = validate()
     track = Reccomended_tracks.query.get_or_404(id)
@@ -356,6 +331,7 @@ def handle_add_track_to_playlist(id):
 
 @app.route('/playlist/<int:id>')
 def show_playlist(id):
+    """show the tracks in current playlist"""
 
     sp = validate()
 
@@ -382,7 +358,6 @@ def show_playlist(id):
 
         playlist_track = playlist_tracks(artist_name=artist,track_name=track_name, playlist_id=id, song_id=song_id)
 
-   
         db.session.add(playlist_track)
 
         try:
@@ -394,54 +369,7 @@ def show_playlist(id):
     tracks = playlist_tracks.query.filter_by(
                 playlist_id=id).limit(30)
 
-                
-
     return render_template('show_playlist.html', tracks=tracks, current_playlist=current_playlist)
-
-
-def show_all_playlists():
-
-    sp = validate()
-    username = sp.me()['id']
-
-    response = sp.user_playlists(username, limit=50, offset=0)
-
-
-    user_playlist_names=[]
-
-    for playlist in response['items']:
-
-        
-        user_playlist_names.append(playlist['name'])
-        
-
-    return str(user_playlist_names)
-
-
-        
-
-    
-
-
-
-
-   
-
-    
-
-
-    
-
-    
-
- 
-
-    
-
-     
-
-
-
 
 @ app.route('/currently_playing')
 def currently_playing():
@@ -457,54 +385,8 @@ def currently_playing():
     return "No track currently playing."
 
 
-@ app.route('/current_user')
-def current_user():
-    cache_handler = spotipy.cache_handler.CacheFileHandler(
-        cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-    return spotify.current_user()
-
-
-'''
-Following lines allow application to be run more conveniently with
-`python app.py` (Make sure you're using python3)
-(Also includes directive to leverage pythons threading capacity.)
-'''
-# if __name__ == '__main__':
-#     app.run(threaded=True, port=int(os.environ.get("PORT",
-#                                                    os.environ.get("SPOTIPY_REDIRECT_URI", 8080).split(":")[-1])))
-
-
-
-
-@app.route('/test')
-def test():
-
-
-    sp = validate()
-
-
-    track = Reccomended_tracks.query.get_or_404(1)
-
-   
-    track_id = track.song_id
-    tracks = []
-    tracks.append(track_id)
-    playlist_id = track.playlist_id
-    current_playlist = playlist.query.get_or_404(playlist_id)
-    username = sp.me()['id']
-    playlist_name = 'run'
-    spotify_playlist_id = GetPlaylistID(username, playlist_name)
-    response = sp.playlist_add_items(playlist_id='4TDipLAhGc0cjmEccnE26O', items=['5DiQ3VjKVa9GgSoKj4Fwgh'])
-
-  
-
-    return str(response)
-
 def validate():
+    """validate the current user or redirect them back to sign in"""
 
     cache_handler = spotipy.cache_handler.CacheFileHandler(
         cache_path=session_cache_path())
@@ -517,10 +399,8 @@ def validate():
         return sp 
 
 
-
-  
-
 def GetPlaylistID(username, playlist_name):
+    """Get playlist id from name to update playlist and add tracks"""
 
     cache_handler = spotipy.cache_handler.CacheFileHandler(
         cache_path=session_cache_path())
@@ -535,48 +415,6 @@ def GetPlaylistID(username, playlist_name):
             playlist_id = playlist['id']
     return playlist_id
     
-
-def call_playlist(creator, playlist_id):
-
-    cache_handler = spotipy.cache_handler.CacheFileHandler(
-        cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-
-    sp = spotipy.Spotify(auth_manager=auth_manager)
-    
-    #step1
-
-    playlist_features_list = ["artist","album","track_name",  "track_id","danceability","energy","key","loudness","mode", "speechiness","instrumentalness","liveness","valence","tempo", "duration_ms","time_signature"]
-    
-    playlist_df = pd.DataFrame(columns = playlist_features_list)
-    
-    #step2
-    
-    playlist = sp.user_playlist_tracks(creator, playlist_id)["items"]
-    for track in playlist:
-        # Create empty dict
-        playlist_features = {}
-        # Get metadata
-        playlist_features["artist"] = track["track"]["album"]["artists"][0]["name"]
-        playlist_features["album"] = track["track"]["album"]["name"]
-        playlist_features["track_name"] = track["track"]["name"]
-        playlist_features["track_id"] = track["track"]["id"]
-        
-        # Get audio features
-        audio_features = sp.audio_features(playlist_features["track_id"])[0]
-        for feature in playlist_features_list[4:]:
-            playlist_features[feature] = audio_features[feature]
-        
-        # Concat the dfs
-        track_df = pd.DataFrame(playlist_features, index = [0])
-        playlist_df = pd.concat([playlist_df, track_df], ignore_index = True)
-
-    #Step 3
-        
-    return playlist_df   
-
 
   
  

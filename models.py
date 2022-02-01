@@ -43,7 +43,7 @@ class Reccomended_tracks(db.Model):
 
 
 class Recently_played_tracks(db.Model):
-    """reccomeded tracks for the user"""
+    """recently played tracks for the user"""
 
     __tablename__ = "recently_played_tracks"
 
@@ -58,7 +58,7 @@ class Recently_played_tracks(db.Model):
         'users.spotify_id'), nullable=False)
 
 class Seed_tracks(db.Model):
-    """reccomeded tracks for the user"""
+    """seed tracks from reccomended tracks for the user"""
 
     __tablename__ = "seed_tracks"
 
@@ -72,7 +72,7 @@ class Seed_tracks(db.Model):
 
 
 class playlist(db.Model):
-    """playlist made of new recommended songs"""
+    """playlists"""
 
     __tablename__ = "playlists"
 
@@ -82,6 +82,7 @@ class playlist(db.Model):
         'users.spotify_id'), nullable=False)
 
 class playlist_tracks(db.Model):
+     """playlist tracks"""
 
     __tablename__ = "playlist_tracks"
 
