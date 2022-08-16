@@ -2,7 +2,7 @@
 <h2>Title</h2>
 <p> Fluidity</p>
 
- [Try it now! - Click this link](https://fluidity-jb.herokuapp.com/home)
+ [Try it now! - Click this link](https://fluidity-jb.herokuapp.com/)
 
 
 
